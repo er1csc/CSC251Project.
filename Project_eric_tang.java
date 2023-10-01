@@ -1,47 +1,93 @@
-import java.util.Scanner;
+import java.util.*; // for reading user input and ArrayList
+import java.io.*; //For IOException and Files
 
-public class Project_eric_tang {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+public class Project_eric_tang{
+    public static void main (String[] args)
+    {
+        //Initialize try to later catch any problem.
+        try
+        {
+            //Declare the file and the scanner object.
+            File policyInfo = new File("PolicyInformation.txt");
+            Scanner inputFile = new Scanner(policyInfo);
+            
+            
+            //Declare and initialize all the variables.
+            int policyholderAge = 0, smokers = 0, nonSmokers = 0;
+            double policyholderHeight = 0.0, policyholderWeight = 0.0;
+            String policyNumber = "", providerName = "", policyholderFirstname = "", policyholderLastname = "", smokingStatus = "", fileInput = "";
+            
+            //Initialize the ArrayList.
+            ArrayList<Policy> policies = new ArrayList<Policy>();
 
-        System.out.println("Please enter the Policy Number:");
-        int policyNumber = scanner.nextInt();
-        scanner.nextLine();
+            //Initialize the while loop to check if the docuement continues.
+            while(inputFile.hasNext())
+            {
+                //Read all the inputs of the document
+                policyNumber = inputFile.nextLine();
+
+                providerName = inputFile.nextLine();
+
+                policyholderFirstname = inputFile.nextLine();
+
+                policyholderLastname = inputFile.nextLine();
+
+                fileInput = inputFile.nextLine();
+                policyholderAge = Integer.parseInt(fileInput);
+
+                smokingStatus = inputFile.nextLine();
+                //Check if the policy is of a smoker or not.
+                if(smokingStatus.equalsIgnoreCase("smoker"))
+                {
+                    smokers++;
+                } else
+                {
+                    nonSmokers++;    
+                }
+
+                fileInput = inputFile.nextLine();
+                policyholderHeight = Double.parseDouble(fileInput);
+
+                fileInput = inputFile.nextLine();
+                policyholderWeight = Double.parseDouble(fileInput);
+
+                //Skip the blank line if we have not reached the end of the file.
+                if(inputFile.hasNext())
+                { 
+                inputFile.nextLine();
+                }
+
+                //Create an instance of the Policy class.
+                Policy p = new Policy(policyNumber, policyholderAge, policyholderHeight, policyholderWeight,
+                                    providerName, policyholderFirstname, policyholderLastname, smokingStatus);
+                
+                //Add the policy object to the ArrayList.
+                policies.add(p);
+            }//Close loop.
+
+            //Close the file.
+            inputFile.close();
+
+            //Use a for loop to get each object of the arraylist  and display all the information.
+            for(int i = 0; i < policies.size(); i++)
+            {
+                policies.get(i).displayInformation();    
+            }
+
+            //Display all the smokers and non-smokers.
+            System.out.println();
+            System.out.println("The number of policies with a smoker is: " + smokers);
+            System.out.println("The number of policies with a non-smoker is: " + nonSmokers);
+            System.out.println();
+
+        }//Close the "try" block of code.
         
-        System.out.println("Please enter the Provider Name:");
-        String providerName = scanner.nextLine();
-
-        System.out.println("Please enter the Policyholder’s First Name:");
-        String firstName = scanner.nextLine();
-
-        System.out.println("Please enter the Policyholder’s Last Name:");
-        String lastName = scanner.nextLine();
-
-        System.out.println("Please enter the Policyholder’s Age:");
-        int age = scanner.nextInt();
-        scanner.nextLine();  // Consume the newline character
-
-        System.out.println("Please enter the Policyholder’s Smoking Status (smoker/non-smoker):");
-        String smokingStatus = scanner.nextLine();
-
-        System.out.println("Please enter the Policyholder’s Height (in inches):");
-        double heightInInches = scanner.nextDouble();
-
-        System.out.println("Please enter the Policyholder’s Weight (in pounds):");
-        double weightInPounds = scanner.nextDouble();
-
-        Policy policy = new Policy(policyNumber, providerName, firstName, lastName, age, smokingStatus, heightInInches, weightInPounds);
-
-        // Display policy information
-        System.out.println("\nPolicy Number: " + policy.getPolicyNumber());
-        System.out.println("Provider Name: " + policy.getProviderName());
-        System.out.println("Policyholder's First Name: " + policy.getFirstName());
-        System.out.println("Policyholder's Last Name: " + policy.getLastName());
-        System.out.println("Policyholder's Age: " + policy.getAge());
-        System.out.println("Policyholder's Smoking Status: " + policy.getSmokingStatus());
-        System.out.println("Policyholder's Height: " + policy.getHeightInInches() + " inches");
-        System.out.println("Policyholders Weight: " + policy.getWeightInPounds() + " pounds");
-        System.out.printf("Policyholder's BMI: " , policy.calculateBMI());
-        System.out.printf("Policy Price: $%.2f%n", policy.calculatePolicyPrice());
-    }
-}
+        //Catch any IOException to deal with it.
+        catch(IOException ex)
+        {
+            //use the getMessage method of the exception we "caught" to print out it's message about what went wrong.
+            System.out.println("Something went wrong reading the file: " + ex.getMessage());
+        }
+        
+    }//Close main.
+}//Close the class container.
